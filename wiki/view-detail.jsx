@@ -3,7 +3,7 @@ window.VIEWS = window.VIEWS || {};
 (function () {
   const { DEX, byDex, TYPES } = window.VDEX;
   const { ROUTES } = window.VGAME;
-  const { go, TypePill, SpriteSlot, Radar, StatBars, Matchups, Empty } = window.VUI;
+  const { go, TypePill, typeAccent, SpriteSlot, Radar, StatBars, Matchups, Empty } = window.VUI;
 
   const H3 = (props) => <h3 style={{ margin: props.m || '0 0 14px', fontFamily: "'Silkscreen', monospace", fontSize: 11, letterSpacing: 1, color: '#8a5cff' }}>{props.children}</h3>;
 
@@ -64,10 +64,11 @@ window.VIEWS = window.VIEWS || {};
   }
 
   function EvoCard({ m, current, size = 84, width, compact }) {
+    const accent = typeAccent(m.types);
     return (
-      <button onClick={() => go('#/pokemon/' + m.dex)} style={{ cursor: 'pointer', width, background: m.dex === current ? '#1a1440' : 'transparent', border: `1px solid ${m.dex === current ? '#3a2f6e' : '#221d3a'}`, borderRadius: 12, padding: compact ? 8 : 10, textAlign: 'center' }}>
+      <button onClick={() => go('#/pokemon/' + m.dex)} style={{ cursor: 'pointer', width, background: m.dex === current ? accent.card : accent.cardBorderFill, border: '1px solid transparent', borderRadius: 12, padding: compact ? 8 : 10, textAlign: 'center' }}>
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <SpriteSlot dex={m.dex} name={m.name} size={size} accent={TYPES[m.types[0]].glow} />
+          <SpriteSlot dex={m.dex} name={m.name} size={size} accent={accent.glow} />
         </div>
         <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: compact ? 12 : 13, fontWeight: 600, color: '#e9e4ff', marginTop: 6, lineHeight: 1.15, overflowWrap: 'anywhere' }}>{m.name}</div>
       </button>
@@ -257,23 +258,23 @@ window.VIEWS = window.VIEWS || {};
         <H3>FORMS</H3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 14 }}>
           {d.forms.map(form => {
-            const formAccent = TYPES[(form.types || d.types)[0]].glow || accent;
+            const formAccent = typeAccent(form.types || d.types);
             const total = form.stats ? Object.values(form.stats).reduce((a, b) => a + b, 0) : null;
             return (
-              <div key={form.name} style={{ display: 'grid', gridTemplateColumns: '96px 1fr', gap: 14, padding: 14, borderRadius: 12, background: '#0d0b20', border: `1px solid ${formAccent}44` }}>
-                <SpriteSlot dex={d.dex} name={form.name} size={96} accent={formAccent} suffix={form.spriteSuffix} label="FORM" />
+              <div key={form.name} style={{ display: 'grid', gridTemplateColumns: '96px 1fr', gap: 14, padding: 14, borderRadius: 12, background: formAccent.cardBorderFill, border: '1px solid transparent' }}>
+                <SpriteSlot dex={d.dex} name={form.name} size={96} accent={formAccent.glow} suffix={form.spriteSuffix} label="FORM" />
                 <div style={{ minWidth: 0 }}>
                   <div style={{ fontFamily: "'Pixelify Sans', sans-serif", fontWeight: 700, fontSize: 19, color: '#fff', marginBottom: 6 }}>{form.name}</div>
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
                     {(form.types || d.types).map(t => <TypePill key={t} t={t} sm />)}
                   </div>
-                  <div style={{ fontFamily: "'Silkscreen', monospace", fontSize: 8, color: formAccent, marginBottom: 6 }}>TRIGGER</div>
+                  <div style={{ fontFamily: "'Silkscreen', monospace", fontSize: 8, color: formAccent.glow, marginBottom: 6 }}>TRIGGER</div>
                   <p style={{ margin: '0 0 10px', fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, color: '#bdb6dd', lineHeight: 1.5 }}>{form.trigger}</p>
                   {form.desc && <p style={{ margin: '0 0 10px', fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, color: '#8a83a8', lineHeight: 1.5 }}>{form.desc}</p>}
                   {form.stats && (
                     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', fontFamily: "'Space Mono', monospace", fontSize: 11, color: '#8a83a8' }}>
                       {Object.entries(form.stats).map(([k, v]) => <span key={k} style={{ padding: '4px 6px', borderRadius: 6, background: '#100c24', border: '1px solid #221c3e' }}>{k} <span style={{ color: '#f0ecff', fontWeight: 700 }}>{v}</span></span>)}
-                      <span style={{ padding: '4px 6px', borderRadius: 6, color: formAccent, background: '#100c24', border: `1px solid ${formAccent}55` }}>BST <span style={{ fontWeight: 700 }}>{total}</span></span>
+                      <span style={{ padding: '4px 6px', borderRadius: 6, color: formAccent.glow, background: '#100c24', border: `1px solid ${formAccent.glow}55` }}>BST <span style={{ fontWeight: 700 }}>{total}</span></span>
                     </div>
                   )}
                 </div>
@@ -292,7 +293,7 @@ window.VIEWS = window.VIEWS || {};
     const idx = DEX.findIndex(x => x.dex === d.dex);
     const prev = DEX[(idx - 1 + DEX.length) % DEX.length];
     const next = DEX[(idx + 1) % DEX.length];
-    const accent = TYPES[d.types[0]].glow;
+    const accent = typeAccent(d.types);
     const foundRoutes = ROUTES.filter(r => r.mons.includes(d.dex));
 
     const NavBtn = ({ m, dir }) => (
@@ -314,9 +315,9 @@ window.VIEWS = window.VIEWS || {};
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.05fr', gap: 10, padding: '4px 32px 28px', position: 'relative' }}>
             <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
-                <div style={{ position: 'absolute', width: 320, height: 320, borderRadius: '50%', background: `radial-gradient(circle, ${accent}55 0%, ${TYPES[d.types[0]].bg}55 35%, transparent 68%)`, filter: 'blur(30px)' }} />
-                <div style={{ position: 'absolute', width: 360, height: 360, borderRadius: '50%', border: `1px solid ${accent}33`, transform: 'rotate(-18deg) scaleY(0.4)' }} />
-                <SpriteSlot dex={d.dex} name={d.name} size={220} accent={accent} label="HERO SPRITE" />
+                <div style={{ position: 'absolute', width: 320, height: 320, borderRadius: '50%', background: accent.aura, filter: 'blur(30px)' }} />
+                <div style={{ position: 'absolute', width: 360, height: 360, borderRadius: '50%', border: `1px solid ${accent.glow}33`, boxShadow: `0 0 0 1px ${accent.glow2}22`, transform: 'rotate(-18deg) scaleY(0.4)' }} />
+                <SpriteSlot dex={d.dex} name={d.name} size={220} accent={accent.glow} label="HERO SPRITE" />
               </div>
               <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginTop: 6 }}>{d.types.map(t => <TypePill key={t} t={t} glow />)}</div>
               <div style={{ fontSize: 14, color: '#8a83a8', letterSpacing: 1, marginTop: 12 }}>{d.category} Pokémon</div>
@@ -324,7 +325,7 @@ window.VIEWS = window.VIEWS || {};
 
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <div style={{ fontFamily: "'Silkscreen', monospace", fontSize: 56, color: '#1c1840', lineHeight: 1, letterSpacing: 2 }}>{d.dex}</div>
-              <h1 style={{ margin: '4px 0 0', fontFamily: "'Pixelify Sans', sans-serif", fontWeight: 700, fontSize: 76, lineHeight: 0.9, color: '#fff', textShadow: `0 0 40px ${accent}88`, letterSpacing: -1 }}>{d.name}</h1>
+              <h1 style={{ margin: '4px 0 0', fontFamily: "'Pixelify Sans', sans-serif", fontWeight: 700, fontSize: 76, lineHeight: 0.9, color: '#fff', textShadow: `0 0 40px ${accent.glow}88`, letterSpacing: -1 }}>{d.name}</h1>
               <p style={{ margin: '20px 0 0', fontSize: 17, lineHeight: 1.7, color: '#bdb6dd', textWrap: 'pretty', maxWidth: 520 }}>{d.flavor}</p>
               <div style={{ display: 'flex', gap: 26, marginTop: 22, flexWrap: 'wrap' }}>
                 {[['HEIGHT', d.height], ['WEIGHT', d.weight], ['CATCH RATE', d.catchRate]].map(([k, v]) => (
@@ -340,13 +341,13 @@ window.VIEWS = window.VIEWS || {};
 
         {/* lower band */}
         <div style={{ background: 'linear-gradient(180deg, #0b0820, #0a0818)', borderTop: '1px solid #1d1838', padding: '28px 32px 34px' }}>
-          <SpriteGallery d={d} accent={accent} />
-          <FormsSection d={d} accent={accent} />
+          <SpriteGallery d={d} accent={accent.glow} />
+          <FormsSection d={d} accent={accent.glow} />
           <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 30 }}>
             <div>
               <H3 m="0 0 6px">STAT SHAPE</H3>
               <div style={{ display: 'flex', justifyContent: 'center' }}><Radar stats={d.stats} /></div>
-              <div style={{ textAlign: 'center', fontFamily: "'Space Mono', monospace", fontSize: 13, color: '#8a83a8', marginTop: 2, marginBottom: 24 }}>TOTAL <span style={{ color: accent, fontWeight: 700, fontSize: 16 }}>{total}</span></div>
+              <div style={{ textAlign: 'center', fontFamily: "'Space Mono', monospace", fontSize: 13, color: '#8a83a8', marginTop: 2, marginBottom: 24 }}>TOTAL <span style={{ color: accent.glow, fontWeight: 700, fontSize: 16 }}>{total}</span></div>
               <H3>TYPE MATCHUPS</H3>
               <Matchups {...window.VGAME.computeMatchups(d.types)} />
             </div>

@@ -22,6 +22,29 @@
     );
   }
 
+  function typeAccent(types) {
+    const list = (Array.isArray(types) ? types : [types]).filter(Boolean).map(t => TYPES[t]).filter(Boolean);
+    const first = list[0] || { bg: '#333', glow: '#888', fg: '#fff' };
+    const second = list[1] || first;
+    return {
+      fg: first.fg,
+      bg: first.bg,
+      glow: first.glow,
+      glow2: second.glow,
+      bg2: second.bg,
+      border: list.length > 1 ? `linear-gradient(135deg, ${first.glow}, ${second.glow})` : first.glow,
+      card: list.length > 1 ? `linear-gradient(160deg, ${first.bg}66, ${second.bg}55 48%, #0e0b1f)` : `linear-gradient(160deg, ${first.bg}55, #0e0b1f)`,
+      aura: list.length > 1 ? `radial-gradient(circle, ${first.glow}55 0%, ${second.glow}44 36%, transparent 68%)` : `radial-gradient(circle, ${first.glow}55 0%, ${first.bg}55 35%, transparent 68%)`,
+      dot: list.length > 1 ? `linear-gradient(135deg, ${first.glow}, ${second.glow})` : first.glow,
+      shadow: list.length > 1 ? `0 0 18px ${first.glow}33, 0 0 26px ${second.glow}22` : `0 0 28px ${first.glow}33`,
+      borderFill: `linear-gradient(#15112a, #15112a) padding-box, linear-gradient(135deg, ${first.glow}, ${second.glow}) border-box`,
+      cardBorderFill: `linear-gradient(#0e0b1f, #0e0b1f) padding-box, linear-gradient(135deg, ${first.glow}, ${second.glow}) border-box`,
+      cardHover: list.length > 1
+        ? `linear-gradient(160deg, ${first.bg}33, ${second.bg}28 48%, transparent) padding-box, linear-gradient(#0e0b1f, #0e0b1f) padding-box, linear-gradient(135deg, ${first.glow}, ${second.glow}) border-box`
+        : `linear-gradient(160deg, ${first.bg}28, transparent) padding-box, linear-gradient(#0e0b1f, #0e0b1f) padding-box, linear-gradient(135deg, ${first.glow}, ${second.glow}) border-box`,
+    };
+  }
+
   // ---- Sprite slot (auto-loads sprites/<dex>.png if present) -------------
   function SpriteSlot({ dex, name, size = 120, label, accent = '#8a5cff', suffix }) {
     const knownBase = dex && window.SPRITE_SET && window.SPRITE_SET.has(String(dex));
@@ -192,5 +215,5 @@
     return <div style={{ padding: 60, textAlign: 'center', color: '#6a6388', fontFamily: "'Space Mono', monospace", fontSize: 14 }}>{label}</div>;
   }
 
-  window.VUI = { go, TypePill, SpriteSlot, ItemIcon, Radar, StatBars, Matchups, Panel, PageHead, NavBar, Empty, TYPES };
+  window.VUI = { go, TypePill, typeAccent, SpriteSlot, ItemIcon, Radar, StatBars, Matchups, Panel, PageHead, NavBar, Empty, TYPES };
 })();

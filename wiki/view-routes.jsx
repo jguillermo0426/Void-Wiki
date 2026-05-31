@@ -3,7 +3,7 @@ window.VIEWS = window.VIEWS || {};
 (function () {
   const { byDex, TYPES } = window.VDEX;
   const { ROUTES, TRAINERS, ITEMS } = window.VGAME;
-  const { go, SpriteSlot, TypePill, ItemIcon, PageHead, Empty } = window.VUI;
+  const { go, SpriteSlot, TypePill, typeAccent, ItemIcon, PageHead, Empty } = window.VUI;
 
   const trainersAt = (slug) => TRAINERS.filter(t => t.loc === slug);
   const locBySlug = (slug) => ROUTES.find(r => r.slug === slug);
@@ -60,10 +60,10 @@ window.VIEWS = window.VIEWS || {};
   // ---------- detail pieces ----------
   function MonCard({ dx }) {
     const m = byDex(dx); if (!m) return null;
-    const accent = TYPES[m.types[0]].glow;
+    const accent = typeAccent(m.types);
     return (
-      <button onClick={() => go('#/pokemon/' + dx)} style={{ cursor: 'pointer', textAlign: 'center', padding: 12, borderRadius: 12, background: '#0e0b1f', border: '1px solid #221d3a', width: 120 }}>
-        <SpriteSlot dex={dx} name={m.name} size={92} accent={accent} />
+      <button onClick={() => go('#/pokemon/' + dx)} style={{ cursor: 'pointer', textAlign: 'center', padding: 12, borderRadius: 12, background: accent.cardBorderFill, border: '1px solid transparent', width: 120 }}>
+        <SpriteSlot dex={dx} name={m.name} size={92} accent={accent.glow} />
         <div style={{ fontFamily: "'Silkscreen', monospace", fontSize: 8, color: '#5f5980', marginTop: 6 }}>No.{m.dex}</div>
         <div style={{ fontFamily: "'Pixelify Sans', sans-serif", fontWeight: 700, fontSize: 15, color: '#fff', lineHeight: 1.1, marginTop: 2 }}>{m.name}</div>
         <div style={{ display: 'flex', gap: 4, justifyContent: 'center', flexWrap: 'wrap', marginTop: 6 }}>{m.types.map(t => <TypePill key={t} t={t} sm onClick={(e) => { e.stopPropagation(); go('#/pokemon/' + dx); }} />)}</div>
@@ -90,9 +90,9 @@ window.VIEWS = window.VIEWS || {};
         </div>
         <p style={{ margin: '0 0 10px', fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, color: '#9a93b5', lineHeight: 1.5 }}>{t.desc}</p>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-          {t.team.map(dx => { const m = byDex(dx); if (!m) return null; return (
-            <button key={dx} onClick={() => go('#/pokemon/' + dx)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px 4px 4px', borderRadius: 999, background: '#15112a', border: `1px solid ${TYPES[m.types[0]].glow}33` }}>
-              <SpriteSlot dex={dx} name={m.name} size={26} accent={TYPES[m.types[0]].glow} />
+          {t.team.map(dx => { const m = byDex(dx); if (!m) return null; const accent = typeAccent(m.types); return (
+            <button key={dx} onClick={() => go('#/pokemon/' + dx)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, padding: '4px 10px 4px 4px', borderRadius: 999, background: accent.borderFill, border: '1px solid transparent' }}>
+              <SpriteSlot dex={dx} name={m.name} size={26} accent={accent.glow} />
               <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, color: '#cdbfff', fontWeight: 600 }}>{m.name}</span>
             </button>
           ); })}

@@ -2,20 +2,20 @@
 window.VIEWS = window.VIEWS || {};
 (function () {
   const { DEX, TYPES } = window.VDEX;
-  const { go, TypePill, SpriteSlot, PageHead, Empty } = window.VUI;
+  const { go, TypePill, typeAccent, SpriteSlot, PageHead, Empty } = window.VUI;
   const ALL_TYPES = Object.keys(TYPES);
 
   function Card({ d }) {
     const [hov, setHov] = React.useState(false);
-    const accent = TYPES[d.types[0]].glow;
+    const accent = typeAccent(d.types);
     const total = Object.values(d.stats).reduce((a, b) => a + b, 0);
     return (
       <button onClick={() => go('#/pokemon/' + d.dex)} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}
         style={{
           textAlign: 'left', cursor: 'pointer', padding: 16, borderRadius: 16,
-          background: hov ? `linear-gradient(160deg, ${TYPES[d.types[0]].bg}55, #0e0b1f)` : '#0e0b1f',
-          border: `1px solid ${hov ? accent + 'aa' : '#221d3a'}`,
-          boxShadow: hov ? `0 0 28px ${accent}33` : 'none', transition: 'all .18s', transform: hov ? 'translateY(-3px)' : 'none',
+          background: hov ? accent.cardHover : '#0e0b1f',
+          border: '1px solid transparent',
+          boxShadow: hov ? accent.shadow : 'none', transition: 'all .18s', transform: hov ? 'translateY(-3px)' : 'none',
           fontFamily: "'Space Grotesk', sans-serif",
         }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
@@ -24,14 +24,14 @@ window.VIEWS = window.VIEWS || {};
           {d.pseudo && <span style={{ fontFamily: "'Silkscreen', monospace", fontSize: 8, color: '#33d6ff' }}>RARE</span>}
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
-          <SpriteSlot dex={d.dex} name={d.name} size={132} accent={accent} />
+          <SpriteSlot dex={d.dex} name={d.name} size={132} accent={accent.glow} />
         </div>
         <div style={{ fontFamily: "'Pixelify Sans', sans-serif", fontWeight: 700, fontSize: 22, color: '#fff', lineHeight: 1 }}>{d.name}</div>
         <div style={{ fontSize: 12, color: '#7a7398', margin: '3px 0 10px' }}>{d.category}</div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 10 }}>{d.types.map(t => <TypePill key={t} t={t} sm onClick={(e) => { e.stopPropagation(); go('#/pokemon/' + d.dex); }} />)}</div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 10, borderTop: '1px solid #1a1630' }}>
           <span style={{ fontFamily: "'Silkscreen', monospace", fontSize: 8, color: '#5f5980' }}>BST</span>
-          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 14, color: accent, fontWeight: 700 }}>{total}</span>
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 14, color: accent.glow, fontWeight: 700 }}>{total}</span>
         </div>
       </button>
     );
