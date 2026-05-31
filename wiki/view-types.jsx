@@ -64,19 +64,6 @@ window.VIEWS = window.VIEWS || {};
         {/* focused breakdown */}
         <div style={{ marginTop: 24 }}>
           <h3 style={{ fontFamily: "'Silkscreen', monospace", fontSize: 11, letterSpacing: 1, color: '#8a5cff', marginBottom: 14 }}>OFFENSIVE BREAKDOWN — CLICK A TYPE</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 14 }}>
-            {['LIGHT', 'COSMIC'].map(at => {
-              const c = CHART[at];
-              return (
-                <div key={at} style={{ padding: 18, borderRadius: 14, background: `linear-gradient(160deg, ${TYPES[at].bg}55, #0c0a1c)`, border: `1px solid ${TYPES[at].glow}66` }}>
-                  <div style={{ marginBottom: 14 }}><TypePill t={at} glow onClick={() => {}} /></div>
-                  {c.se.length > 0 && <Row label="Super effective vs" color="#7dffa8" items={c.se} />}
-                  {c.nv.length > 0 && <Row label="Not very effective vs" color="#ff9aae" items={c.nv} />}
-                  {c.no.length > 0 && <Row label="No effect on" color="#8a83a8" items={c.no} />}
-                </div>
-              );
-            })}
-          </div>
           <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, color: '#6a6388', marginTop: 14 }}>Hover any row or column in the grid above to trace a single type's matchups.</p>
         </div>
       </div>

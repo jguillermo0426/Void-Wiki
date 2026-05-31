@@ -63,11 +63,13 @@ window.VIEWS = window.VIEWS || {};
     return node(root);
   }
 
-  function EvoCard({ m, current }) {
+  function EvoCard({ m, current, size = 84, width, compact }) {
     return (
-      <button onClick={() => go('#/pokemon/' + m.dex)} style={{ cursor: 'pointer', background: m.dex === current ? '#1a1440' : 'transparent', border: `1px solid ${m.dex === current ? '#3a2f6e' : '#221d3a'}`, borderRadius: 12, padding: 10, textAlign: 'center' }}>
-        <SpriteSlot dex={m.dex} name={m.name} size={84} accent={TYPES[m.types[0]].glow} />
-        <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, fontWeight: 600, color: '#e9e4ff', marginTop: 6 }}>{m.name}</div>
+      <button onClick={() => go('#/pokemon/' + m.dex)} style={{ cursor: 'pointer', width, background: m.dex === current ? '#1a1440' : 'transparent', border: `1px solid ${m.dex === current ? '#3a2f6e' : '#221d3a'}`, borderRadius: 12, padding: compact ? 8 : 10, textAlign: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <SpriteSlot dex={m.dex} name={m.name} size={size} accent={TYPES[m.types[0]].glow} />
+        </div>
+        <div style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: compact ? 12 : 13, fontWeight: 600, color: '#e9e4ff', marginTop: 6, lineHeight: 1.15, overflowWrap: 'anywhere' }}>{m.name}</div>
       </button>
     );
   }
@@ -77,6 +79,54 @@ window.VIEWS = window.VIEWS || {};
       <div style={{ textAlign: 'center', color: '#8a5cff', flex: '0 0 auto' }}>
         <div style={{ fontSize: 18, lineHeight: 1 }}>→</div>
         <div style={{ fontFamily: "'Silkscreen', monospace", fontSize: 7, color: '#6a6388', marginTop: 2 }}>{method}</div>
+      </div>
+    );
+  }
+
+  function RadialEvoNode({ node: n, current }) {
+    const { data: m, children } = n;
+    const count = children.length;
+    const radius = count > 8 ? 39 : 36;
+    const centerSize = 80;
+    const childSize = count > 8 ? 62 : 70;
+    const cardWidth = count > 8 ? 112 : 122;
+    const cardHalf = cardWidth / 2;
+    const cardTopOffset = count > 8 ? 56 : 62;
+    const height = count > 8 ? 680 : 560;
+    const placements = children.map((child, i) => {
+      const angle = -90 + (360 / count) * i;
+      const rad = angle * Math.PI / 180;
+      const x = 50 + Math.cos(rad) * radius;
+      const y = 50 + Math.sin(rad) * radius;
+      const labelX = 50 + Math.cos(rad) * (radius * 0.55);
+      const labelY = 50 + Math.sin(rad) * (radius * 0.55);
+      return { child, angle, x, y, labelX, labelY };
+    });
+    return (
+      <div style={{ overflowX: 'auto', paddingBottom: 4 }}>
+      <div style={{ position: 'relative', width: 680, height, overflow: 'hidden', margin: '0 auto', borderRadius: 16, background: 'radial-gradient(circle at 50% 50%, #171134 0%, #0d0a20 48%, transparent 72%)', border: '1px solid #221d3a' }}>
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+          {placements.map(({ child, x, y }) => (
+            <line key={child.node.data.dex} x1="50" y1="50" x2={x} y2={y} stroke="#3a2f6e" strokeWidth="0.35" />
+          ))}
+          <circle cx="50" cy="50" r={radius} fill="none" stroke="#221d3a" strokeWidth="0.25" strokeDasharray="1 1.4" />
+        </svg>
+
+        <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)', zIndex: 3 }}>
+          <EvoCard m={m} current={current} size={centerSize} width={128} compact />
+        </div>
+
+        {placements.map(({ child, x, y, labelX, labelY }) => (
+          <React.Fragment key={child.node.data.dex}>
+            <div style={{ position: 'absolute', left: `calc(${labelX}% - 46px)`, top: `calc(${labelY}% - 9px)`, width: 92, zIndex: 2, textAlign: 'center', pointerEvents: 'none' }}>
+              <div style={{ fontFamily: "'Silkscreen', monospace", fontSize: 7, color: '#6a6388', lineHeight: 1.25, overflowWrap: 'anywhere' }}>{child.method}</div>
+            </div>
+            <div style={{ position: 'absolute', left: `calc(${x}% - ${cardHalf}px)`, top: `calc(${y}% - ${cardTopOffset}px)`, width: cardWidth, zIndex: 3 }}>
+              <EvoCard m={child.node.data} current={current} size={childSize} width={cardWidth} compact />
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
       </div>
     );
   }
@@ -91,6 +141,7 @@ window.VIEWS = window.VIEWS || {};
         <EvoNode node={children[0].node} current={current} />
       </div>
     );
+    if (children.length >= 4) return <RadialEvoNode node={n} current={current} />;
     return (
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
         <EvoCard m={m} current={current} />
@@ -199,6 +250,41 @@ window.VIEWS = window.VIEWS || {};
     );
   }
 
+  function FormsSection({ d, accent }) {
+    if (!d.forms || d.forms.length === 0) return null;
+    return (
+      <div style={{ marginBottom: 28, paddingBottom: 28, borderBottom: '1px solid #1d1838' }}>
+        <H3>FORMS</H3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 14 }}>
+          {d.forms.map(form => {
+            const formAccent = TYPES[(form.types || d.types)[0]].glow || accent;
+            const total = form.stats ? Object.values(form.stats).reduce((a, b) => a + b, 0) : null;
+            return (
+              <div key={form.name} style={{ display: 'grid', gridTemplateColumns: '96px 1fr', gap: 14, padding: 14, borderRadius: 12, background: '#0d0b20', border: `1px solid ${formAccent}44` }}>
+                <SpriteSlot dex={d.dex} name={form.name} size={96} accent={formAccent} suffix={form.spriteSuffix} label="FORM" />
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontFamily: "'Pixelify Sans', sans-serif", fontWeight: 700, fontSize: 19, color: '#fff', marginBottom: 6 }}>{form.name}</div>
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
+                    {(form.types || d.types).map(t => <TypePill key={t} t={t} sm />)}
+                  </div>
+                  <div style={{ fontFamily: "'Silkscreen', monospace", fontSize: 8, color: formAccent, marginBottom: 6 }}>TRIGGER</div>
+                  <p style={{ margin: '0 0 10px', fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, color: '#bdb6dd', lineHeight: 1.5 }}>{form.trigger}</p>
+                  {form.desc && <p style={{ margin: '0 0 10px', fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, color: '#8a83a8', lineHeight: 1.5 }}>{form.desc}</p>}
+                  {form.stats && (
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', fontFamily: "'Space Mono', monospace", fontSize: 11, color: '#8a83a8' }}>
+                      {Object.entries(form.stats).map(([k, v]) => <span key={k} style={{ padding: '4px 6px', borderRadius: 6, background: '#100c24', border: '1px solid #221c3e' }}>{k} <span style={{ color: '#f0ecff', fontWeight: 700 }}>{v}</span></span>)}
+                      <span style={{ padding: '4px 6px', borderRadius: 6, color: formAccent, background: '#100c24', border: `1px solid ${formAccent}55` }}>BST <span style={{ fontWeight: 700 }}>{total}</span></span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
   window.VIEWS.Detail = function Detail({ param }) {
     const d = byDex(param);
     if (!d) return <Empty label={'No Pokédex entry for №' + param + '.'} />;
@@ -255,6 +341,7 @@ window.VIEWS = window.VIEWS || {};
         {/* lower band */}
         <div style={{ background: 'linear-gradient(180deg, #0b0820, #0a0818)', borderTop: '1px solid #1d1838', padding: '28px 32px 34px' }}>
           <SpriteGallery d={d} accent={accent} />
+          <FormsSection d={d} accent={accent} />
           <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 30 }}>
             <div>
               <H3 m="0 0 6px">STAT SHAPE</H3>

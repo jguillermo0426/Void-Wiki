@@ -25,8 +25,9 @@
   // ---- Sprite slot (auto-loads sprites/<dex>.png if present) -------------
   function SpriteSlot({ dex, name, size = 120, label, accent = '#8a5cff', suffix }) {
     const knownBase = dex && window.SPRITE_SET && window.SPRITE_SET.has(String(dex));
-    const hasSrc = dex && (suffix !== undefined || knownBase);
-    const src = hasSrc ? `sprites/${dex}${suffix ? '-' + suffix : ''}.png` : null;
+    const hasSrc = dex && (suffix !== undefined || knownBase || !window.SPRITE_SET);
+    const cacheKey = window.SPRITE_VERSION ? `?v=${window.SPRITE_VERSION}` : '';
+    const src = hasSrc ? `sprites/${dex}${suffix ? '-' + suffix : ''}.png${cacheKey}` : null;
     const [ok, setOk] = React.useState(false);
     React.useEffect(() => { setOk(false); }, [src]);
     return (
@@ -46,6 +47,24 @@
             background: 'repeating-linear-gradient(45deg, #14112a, #14112a 6px, #181433 6px, #181433 12px)',
           }}>{label || 'SPRITE'}</div>
         )}
+      </div>
+    );
+  }
+
+  function ItemIcon({ item, color = '#8a5cff', size = 48 }) {
+    const src = item && item.icon;
+    const [ok, setOk] = React.useState(false);
+    React.useEffect(() => { setOk(false); }, [src]);
+    return (
+      <div style={{
+        flex: '0 0 auto', width: size, height: size, borderRadius: 10,
+        background: `radial-gradient(circle at 38% 32%, ${color}33, #0b0918)`,
+        border: `1px solid ${color}66`, display: 'flex', alignItems: 'center', justifyContent: 'center',
+        overflow: 'hidden',
+      }}>
+        {src && <img src={src} alt={item.name} onLoad={() => setOk(true)} onError={() => setOk(false)}
+          style={{ width: '82%', height: '82%', objectFit: 'contain', imageRendering: 'pixelated', display: ok ? 'block' : 'none' }} />}
+        {!ok && <span style={{ width: Math.max(10, size / 3), height: Math.max(10, size / 3), borderRadius: 4, background: color, boxShadow: `0 0 10px ${color}` }} />}
       </div>
     );
   }
@@ -138,7 +157,8 @@
   // ---- Nav bar -----------------------------------------------------------
   const NAV = [
     ['Pokédex', '#/pokedex'], ['Moves', '#/moves'], ['Abilities', '#/abilities'],
-    ['Locations', '#/locations'], ['Items', '#/items'], ['Types', '#/types'], ['Trainers', '#/trainers'],
+    ['Locations', '#/locations'], ['Items', '#/items'], ['Types', '#/types'], 
+    // ['Trainers', '#/trainers'],
   ];
   function NavBar({ route, query, setQuery }) {
     const active = (h) => route.startsWith(h.slice(1)) || (h === '#/pokedex' && route.startsWith('/pokemon')) || (h === '#/locations' && route.startsWith('/location'));
@@ -172,5 +192,5 @@
     return <div style={{ padding: 60, textAlign: 'center', color: '#6a6388', fontFamily: "'Space Mono', monospace", fontSize: 14 }}>{label}</div>;
   }
 
-  window.VUI = { go, TypePill, SpriteSlot, Radar, StatBars, Matchups, Panel, PageHead, NavBar, Empty, TYPES };
+  window.VUI = { go, TypePill, SpriteSlot, ItemIcon, Radar, StatBars, Matchups, Panel, PageHead, NavBar, Empty, TYPES };
 })();

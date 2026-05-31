@@ -2,11 +2,16 @@
 window.VIEWS = window.VIEWS || {};
 (function () {
   const { byDex, TYPES } = window.VDEX;
-  const { ROUTES, TRAINERS } = window.VGAME;
-  const { go, SpriteSlot, TypePill, PageHead, Empty } = window.VUI;
+  const { ROUTES, TRAINERS, ITEMS } = window.VGAME;
+  const { go, SpriteSlot, TypePill, ItemIcon, PageHead, Empty } = window.VUI;
 
   const trainersAt = (slug) => TRAINERS.filter(t => t.loc === slug);
   const locBySlug = (slug) => ROUTES.find(r => r.slug === slug);
+  const itemByName = (name) => ITEMS.find(i => i.name === name);
+  const ITEM_COLORS = {
+    'Evolution': '#5fd13c', 'Valuable': '#ffd23c', 'Battle Items': '#8a5cff', 'Key Item': '#33d6ff',
+    'Medicine': '#ff6f8f', 'Poké Ball': '#ff8a5c', 'Berries': '#d13c8a',
+  };
 
   // ---------- index ----------
   window.VIEWS.Locations = function Locations() {
@@ -173,12 +178,16 @@ window.VIEWS = window.VIEWS || {};
             <section>
               <H3>ITEMS</H3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {r.items.map(it => (
-                  <button key={it} onClick={() => go('#/items')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 10, background: '#0e0b1f', border: '1px solid #221d3a', textAlign: 'left' }}>
-                    <span style={{ flex: '0 0 auto', width: 12, height: 12, borderRadius: 3, background: '#8a5cff', boxShadow: '0 0 8px #8a5cff' }} />
-                    <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, color: '#cdbfff', fontWeight: 600 }}>{it}</span>
-                  </button>
-                ))}
+                {r.items.map(it => {
+                  const item = itemByName(it) || { name: it };
+                  const col = ITEM_COLORS[item.cat] || '#8a5cff';
+                  return (
+                    <button key={it} onClick={() => go('#/items')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderRadius: 10, background: '#0e0b1f', border: '1px solid #221d3a', textAlign: 'left' }}>
+                      <ItemIcon item={item} color={col} size={30} />
+                      <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, color: '#cdbfff', fontWeight: 600 }}>{it}</span>
+                    </button>
+                  );
+                })}
               </div>
             </section>
           </div>

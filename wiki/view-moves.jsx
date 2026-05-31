@@ -25,7 +25,7 @@ window.VIEWS = window.VIEWS || {};
 
     return (
       <div>
-        <PageHead kicker="MOVE INDEX" title="Moves" sub="Every technique a Pokémon can learn in Void — including the new Void- and Cosmic-type moves. Click a type to see the type chart." />
+        <PageHead kicker="MOVE INDEX" title="Moves" sub="Every technique a Pokémon can learn in Void, including the new Light and Cosmic-type moves. Click a type to see the type chart." />
 
         <div style={{ display: 'flex', gap: 16, marginBottom: 20, flexWrap: 'wrap', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 13px', borderRadius: 8, background: '#15112a', border: '1px solid #2a2545', minWidth: 220 }}>

@@ -3,7 +3,6 @@
 window.VGAME = (function () {
   // ---- Moves -------------------------------------------------------------
   const MOVES = [
-    [
       {
         name: "Megahorn",
         type: "BUG",
@@ -7582,11 +7581,14 @@ window.VGAME = (function () {
         pp: 10,
         desc: "A powerful light that defies nature, striking Fairy types and ignoring target stat changes."
       }
-    ]
   ];
 
   // ---- Abilities ---------------------------------------------------------
   const ABILITIES = [
+    {
+      name: 'Gaia Guardian',
+      desc: 'When Grassy Terrain is activated, terraform into its Guardian Form.'
+    },
     {
       name: "Stench",
       desc: "The stench may cause the target to flinch.",
@@ -8907,23 +8909,11 @@ window.VGAME = (function () {
   ];
 
   // ---- Items -------------------------------------------------------------
+  // Optional item art: add icon: 'items/example.png' to any item.
+  // categories (you can add): Evolution, Valuable, Battle Items, Key Item, Medicine, Poké Ball, Berries
   const ITEMS = [
-    { name: 'Void Shard', cat: 'Evolution', desc: 'A sliver of true nothing. Evolves Voidlinct into Umbravoid when used.', find: 'Hollow Caldera' },
-    { name: 'Star Piece', cat: 'Valuable', desc: 'A shard of fallen star. Sells for a high price; cherished by Cosmic-types.', find: 'Meteor Field' },
-    { name: 'Cosmic Lens', cat: 'Held', desc: 'Held item. Boosts the holder\u2019s Cosmic-type moves by 20%.', find: 'Observatory Ruins' },
-    { name: 'Null Core', cat: 'Held', desc: 'Held item. Boosts Light-type moves by 20%, but the holder cannot be healed by items.', find: 'Team Void Base' },
-    { name: 'Event Stone', cat: 'Key Item', desc: 'Resonates near the Nullspace Rift. Required to reach OBLIVAX.', find: 'Story event' },
-    { name: 'Telescope', cat: 'Key Item', desc: 'Reveals which Pokémon appear on starry nights when used outdoors.', find: 'Observatory Ruins' },
-    { name: 'Potion', cat: 'Medicine', desc: 'Restores 20 HP to a single Pokémon.', find: 'Poké Marts' },
-    { name: 'Super Potion', cat: 'Medicine', desc: 'Restores 60 HP to a single Pokémon.', find: 'Poké Marts' },
-    { name: 'Revive', cat: 'Medicine', desc: 'Revives a fainted Pokémon with half its max HP.', find: 'Poké Marts' },
-    { name: 'Void Ball', cat: 'Poké Ball', desc: 'A dark ball that works better on Light- and Cosmic-types (×3 catch rate).', find: 'Mistport Bay' },
-    { name: 'Dusk Ball', cat: 'Poké Ball', desc: 'Catches better in caves or at night (×3 in darkness).', find: 'Poké Marts (night)' },
-    { name: 'Leftovers', cat: 'Held', desc: 'Held item. Restores a little HP each turn — countered by the Vacuum ability.', find: 'Hollow Caldera' },
-    { name: 'Choice Specs', cat: 'Held', desc: 'Boosts Sp. Atk by 50% but locks the holder into one move.', find: 'Mistport Bay' },
-    { name: 'Focus Sash', cat: 'Held', desc: 'If at full HP, the holder survives a KO hit with 1 HP. Single use.', find: 'Route 14' },
-    { name: 'Rare Candy', cat: 'Valuable', desc: 'Instantly raises a Pokémon\u2019s level by one.', find: 'Hidden across routes' },
-    { name: 'Starlit Incense', cat: 'Held', desc: 'A sweet smoke that summons more Cosmic-types in tall grass.', find: 'Observatory Ruins' },
+    { name: 'Sitrus Berry', cat: 'Berries', icon: 'items/lum-berry.png', desc: 'Restores a quarter of max HP when eaten in battle.', find: 'Berry trees' },
+    { name: 'Lum Berry', cat: 'Berries', icon: 'items/sitrus-berry.png', desc: 'Cures any status condition when eaten in battle.', find: 'Berry trees' },
   ];
 
   // ---- Locations ---------------------------------------------------------
@@ -8934,42 +8924,43 @@ window.VGAME = (function () {
     },
   ];
 
-  // ---- Trainers / Gyms ---------------------------------------------------
-  const TRAINERS = [
-    { name: 'Ignia', loc: 'cinder-hollow', role: 'Gym Leader · Cinder Hollow', type: 'FIRE', badge: 'Ember Badge', team: ['001', '002'], desc: 'A hot-tempered blacksmith who forges her own badges. Believes a battle should leave you warmer than you started.' },
-    { name: 'Wade', loc: 'mistport-bay', role: 'Gym Leader · Mistport', type: 'WATER', badge: 'Tide Badge', team: ['005', '006'], desc: 'A ferry captain who battles on the rocking deck of his boat. Patient as the sea, twice as deep.' },
-    { name: 'Fern', loc: 'verdant-way', role: 'Gym Leader · Verdant', type: 'GRASS', badge: 'Bloom Badge', team: ['003', '004'], desc: 'A botanist who treats her arena like a greenhouse. She knows which of your Pokémon skipped breakfast.' },
-    { name: 'Orrin', loc: 'observatory-ruins', role: 'Gym Leader · Observatory', type: 'COSMIC', badge: 'Star Badge', team: ['011', '012', '088'], desc: 'The region\u2019s last astronomer. Battles only after dark, when his partners are strongest.' },
-    { name: 'Grunt Mire', loc: 'team-void-base', role: 'Team Void · Grunt', type: 'DARK', badge: '—', team: ['033', '142'], desc: 'A true believer who joined for the robes and stayed for the cause. Not very good at battling.' },
-    { name: 'Admin Sable', loc: 'team-void-base', role: 'Team Void · Admin', type: 'GHOST', badge: '—', team: ['034', '142'], desc: 'Cold and precise. She catalogues every trainer Team Void defeats and feeds their items to the void.' },
-    { name: 'Admin Cassius', loc: 'nullspace-rift', role: 'Team Void · Admin', type: 'LIGHT', badge: '—', team: ['034', '066'], desc: 'A former scientist who looked too long into the Rift. He speaks of OBLIVAX as if it can hear him.' },
-    { name: 'Nox', loc: 'nullspace-rift', role: 'Team Void · Leader', type: 'LIGHT', badge: '—', team: ['035', '142', '066'], boss: true, desc: 'The founder of Team Void. He wants to give the universe back the silence he believes it is owed. Wields a raised Umbravoid.' },
-  ];
+const TRAINERS = [
+  // sample trainer
+  // {
+  //   name: 'Youngster Milo',
+  //   loc: 'saudade-town',
+  //   role: 'Youngster',
+  //   type: 'GRASS',
+  //   badge: '—',
+  //   team: ['001'],
+  //   desc: 'A cheerful new trainer waiting near the town path.'
+  // },
+];
 
   // ---- Type chart --------------------------------------------------------
   const TYPE_ORDER = ['NORMAL', 'FIRE', 'WATER', 'ELECTRIC', 'GRASS', 'ICE', 'FIGHTING', 'POISON', 'GROUND', 'FLYING', 'PSYCHIC', 'BUG', 'ROCK', 'GHOST', 'DRAGON', 'DARK', 'STEEL', 'FAIRY', 'LIGHT', 'COSMIC'];
   // per attacking type: se = 2×, nv = 0.5×, no = 0×
   const CHART = {
-    NORMAL: { se: [], nv: ['ROCK', 'STEEL'], no: ['GHOST'] },
-    FIRE: { se: ['GRASS', 'ICE', 'BUG', 'STEEL'], nv: ['FIRE', 'WATER', 'ROCK', 'DRAGON'], no: [] },
+    NORMAL: { se: ['COSMIC'], nv: ['ROCK', 'STEEL'], no: ['GHOST'] },
+    FIRE: { se: ['GRASS', 'ICE', 'BUG', 'STEEL'], nv: ['FIRE', 'WATER', 'ROCK', 'DRAGON'], no: ['COSMIC'] },
     WATER: { se: ['FIRE', 'GROUND', 'ROCK', 'LIGHT'], nv: ['WATER', 'GRASS', 'DRAGON'], no: [] },
     ELECTRIC: { se: ['WATER', 'FLYING'], nv: ['ELECTRIC', 'GRASS', 'DRAGON'], no: ['GROUND'] },
     GRASS: { se: ['WATER', 'GROUND', 'ROCK', 'LIGHT'], nv: ['FIRE', 'GRASS', 'POISON', 'FLYING', 'BUG', 'DRAGON', 'STEEL'], no: [] },
     ICE: { se: ['GRASS', 'GROUND', 'FLYING', 'DRAGON', 'LIGHT'], nv: ['FIRE', 'WATER', 'ICE', 'STEEL'], no: [] },
     FIGHTING: { se: ['NORMAL', 'ICE', 'ROCK', 'DARK', 'STEEL'], nv: ['POISON', 'FLYING', 'PSYCHIC', 'BUG', 'FAIRY', 'LIGHT'], no: ['GHOST'] },
     POISON: { se: ['GRASS', 'FAIRY', 'LIGHT'], nv: ['POISON', 'GROUND', 'ROCK', 'GHOST'], no: ['STEEL'] },
-    GROUND: { se: ['FIRE', 'ELECTRIC', 'POISON', 'ROCK', 'STEEL'], nv: ['GRASS', 'BUG'], no: ['FLYING'] },
+    GROUND: { se: ['FIRE', 'ELECTRIC', 'POISON', 'ROCK', 'STEEL'], nv: ['GRASS', 'BUG', 'COSMIC'], no: ['FLYING'] },
     FLYING: { se: ['GRASS', 'FIGHTING', 'BUG'], nv: ['ELECTRIC', 'ROCK', 'STEEL'], no: [] },
-    PSYCHIC: { se: ['FIGHTING', 'POISON'], nv: ['PSYCHIC', 'STEEL'], no: ['DARK'] },
-    BUG: { se: ['GRASS', 'PSYCHIC', 'DARK'], nv: ['FIRE', 'FIGHTING', 'POISON', 'FLYING', 'GHOST', 'STEEL', 'FAIRY'], no: [] },
-    ROCK: { se: ['FIRE', 'ICE', 'FLYING', 'BUG'], nv: ['FIGHTING', 'GROUND', 'STEEL'], no: [] },
+    PSYCHIC: { se: ['FIGHTING', 'POISON', 'COSMIC'], nv: ['PSYCHIC', 'STEEL'], no: ['DARK'] },
+    BUG: { se: ['GRASS', 'PSYCHIC', 'DARK', 'COSMIC'], nv: ['FIRE', 'FIGHTING', 'POISON', 'FLYING', 'GHOST', 'STEEL', 'FAIRY'], no: [] },
+    ROCK: { se: ['FIRE', 'ICE', 'FLYING', 'BUG'], nv: ['FIGHTING', 'GROUND', 'STEEL', 'COSMIC'], no: [] },
     GHOST: { se: ['PSYCHIC', 'GHOST', 'COSMIC'], nv: ['DARK', 'LIGHT'], no: ['NORMAL'] },
-    DRAGON: { se: ['DRAGON'], nv: ['STEEL', 'COSMIC'], no: ['FAIRY'] },
+    DRAGON: { se: ['DRAGON'], nv: ['STEEL'], no: ['FAIRY'] },
     DARK: { se: ['PSYCHIC', 'GHOST', 'LIGHT', 'COSMIC'], nv: ['FIGHTING', 'DARK', 'FAIRY'], no: [] },
-    STEEL: { se: ['ICE', 'ROCK', 'FAIRY'], nv: ['FIRE', 'WATER', 'ELECTRIC', 'STEEL'], no: [] },
-    FAIRY: { se: ['FIGHTING', 'DRAGON', 'DARK'], nv: ['FIRE', 'POISON', 'STEEL', 'COSMIC', 'LIGHT'], no: [] },
-    LIGHT: { se: ['FIGHTING', 'GHOST', 'DRAGON', 'DARK'], nv: ['FIRE', 'WATER', 'GRASS', 'ICE'], no: [] },
-    COSMIC: { se: ['DRAGON', 'STEEL', 'FIGHTING'], nv: ['COSMIC', 'LIGHT'], no: [] },
+    STEEL: { se: ['ICE', 'ROCK', 'FAIRY'], nv: ['FIRE', 'WATER', 'ELECTRIC', 'STEEL', 'COSMIC'], no: [] },
+    FAIRY: { se: ['FIGHTING', 'DRAGON', 'DARK'], nv: ['FIRE', 'POISON', 'STEEL', 'LIGHT'], no: [] },
+    LIGHT: { se: ['FIGHTING', 'GHOST', 'DRAGON', 'DARK', 'COSMIC'], nv: ['FIRE', 'WATER', 'GRASS', 'ICE'], no: [] },
+    COSMIC: { se: ['FLYING', 'STEEL', 'FIRE', 'FAIRY'], nv: ['BUG', 'COSMIC', 'LIGHT'], no: ['ICE'] },
   };
   const eff = (atk, def) => {
     const c = CHART[atk];

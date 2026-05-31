@@ -2,11 +2,11 @@
 window.VIEWS = window.VIEWS || {};
 (function () {
   const { ITEMS } = window.VGAME;
-  const { PageHead, Empty } = window.VUI;
+  const { PageHead, Empty, ItemIcon } = window.VUI;
 
   const CAT_COLOR = {
-    'Evolution': '#5fd13c', 'Valuable': '#ffd23c', 'Held': '#8a5cff', 'Key Item': '#33d6ff',
-    'Medicine': '#ff6f8f', 'Poké Ball': '#ff8a5c',
+    'Evolution': '#5fd13c', 'Valuable': '#ffd23c', 'Battle Items': '#8a5cff', 'Key Item': '#33d6ff',
+    'Medicine': '#ff6f8f', 'Poké Ball': '#ff8a5c', 'Berries': '#d13c8a',
   };
 
   window.VIEWS.Items = function Items() {
@@ -17,7 +17,7 @@ window.VIEWS = window.VIEWS || {};
 
     return (
       <div>
-        <PageHead kicker="ITEM BAG" title="Items" sub="Evolution stones, held items, and the tools you'll need to survive the descent into the Nullspace Rift." />
+        <PageHead kicker="ITEM BAG" title="Items" sub="Evolution stones, battle items, berries, and the tools you'll need to survive the descent into the Nullspace Rift." />
 
         <div style={{ display: 'flex', gap: 14, marginBottom: 20, flexWrap: 'wrap', alignItems: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 13px', borderRadius: 8, background: '#15112a', border: '1px solid #2a2545', minWidth: 220 }}>
@@ -37,9 +37,7 @@ window.VIEWS = window.VIEWS || {};
               const col = CAT_COLOR[it.cat] || '#8a5cff';
               return (
                 <div key={it.name} style={{ display: 'flex', gap: 14, padding: 16, borderRadius: 14, background: '#0e0b1f', border: '1px solid #221d3a' }}>
-                  <div style={{ flex: '0 0 auto', width: 48, height: 48, borderRadius: 10, background: `radial-gradient(circle at 38% 32%, ${col}33, #0b0918)`, border: `1px solid ${col}66`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <span style={{ width: 16, height: 16, borderRadius: 4, background: col, boxShadow: `0 0 10px ${col}` }} />
-                  </div>
+                  <ItemIcon item={it} color={col} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
                       <span style={{ fontFamily: "'Pixelify Sans', sans-serif", fontWeight: 700, fontSize: 18, color: '#fff' }}>{it.name}</span>
