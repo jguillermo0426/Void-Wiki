@@ -28,37 +28,82 @@ window.VDEX = (function () {
     COSMIC:  { name: 'Cosmic',  bg: '#15375e', glow: '#33d6ff', fg: '#dff1ff' },
   };
 
-  const M    = (lv, name, type, cls, pow, acc, pp, sig) => ({ lv, name, type, cls, pow, acc, pp, sig });
-  const EGG  = (name, type, cls, pow, acc, pp, sig)    => ({ lv: 'EGG', name, type, cls, pow, acc, pp, sig });
-  const TM   = (num, name, type, cls, pow, acc, pp, sig) => ({ lv: `TM${String(num).padStart(2,'0')}`, name, type, cls, pow, acc, pp, sig });
+  // Learnset entries store only lv + name (+ optional sig flag for signature-move styling).
+  // Full move data (type, class, power, acc, pp, desc) lives in VGAME.MOVES and is looked up at render time.
+  const M   = (lv, name, sig) => ({ lv, name, ...(sig ? { sig } : {}) });
+  const EGG = (name, sig)     => ({ lv: 'EGG', name, ...(sig ? { sig } : {}) });
+  const TM  = (num, name, sig)=> ({ lv: `TM${String(num).padStart(2,'0')}`, name, ...(sig ? { sig } : {}) });
 
   const DEX = [
     {
       dex: '001', name: 'Tamatoo', category: 'Mudcake', types: ['GRASS'],
       height: '1\'05" ft', weight: '25.3 lbs', catchRate: 140, found: ['Saudade Town (Starter)'],
-      abilities: [{ name: 'Overgrow', desc: 'Powers up Grass-type moves when the Pokémon\'s HP is low.' }],
-      hidden:  {name: "Stamina", desc: "Boosts the Defense stat when the Pokémon is hit by an attack."},
+      abilities: ['Overgrow'],
+      hidden:  'Stamina',
       stats: { HP: 54, ATK: 58, DEF: 58, SPA: 40, SPD: 50, SPE: 50 },
       flavor: 'To get nutrition, Tamatoo chews soil in its mouth like gum. After the soil has lost its nutrients, it spits out small pucks of dirt called “Mud Cakes”.',
-      weak: ['FIRE', 'ICE', 'POISON', 'FLYING', 'BUG'], resist: ['WATER', 'ELECTRIC', 'GRASS', 'GROUND', 'LIGHT'], immune: [],
       evo: { to: '002', method: 'Lv 16' },
       levelMoves: [
-        M('1', 'Tackle', 'NORMAL', 'Physical', 40, 100, 35), 
-        M('5', 'Defense Curl', 'NORMAL', 'Status', '—', '—', 40), 
-        M('7', 'Leafage', 'GRASS', 'Special', 40, 100, 40), 
-        M('11', 'Barrage', 'NORMAL', 'Physical', 15, 85, 20),
-        M('15', 'Grass Whistle', 'GRASS', 'Status', '-', 55, 15),
-        M('18', 'Razor Leaf', 'GRASS', 'Physical', 55, 95, 25),
-        M('22', 'Worry Seed', 'GRASS', 'Status', '-', 100, 10),
-        M('25', 'Headbutt', 'NORMAL', 'Physical', 70, 100, 15),
-        M('29', 'Stealth Rock', 'ROCK', 'Status', '-', '-', 20),
-        M('32', 'Rock Blast', 'ROCK', 'Physical', 25, 90, 10),
-        M('36', 'Bulk Up', 'FIGHTING', 'Status', '-', '-', 20),
-        M('39', 'Stone Edge', 'ROCK', 'Physical', 100, 80, 5),
-        M('43', 'Leaf Storm', 'GRASS', 'Special', 130, 90, 5)
+        M('1',  'Tackle'),
+        M('5',  'Defense Curl'),
+        M('7',  'Leafage'),
+        M('11', 'Barrage'),
+        M('15', 'Grass Whistle'),
+        M('18', 'Razor Leaf'),
+        M('22', 'Worry Seed'),
+        M('25', 'Headbutt'),
+        M('29', 'Stealth Rock'),
+        M('32', 'Rock Blast'),
+        M('36', 'Bulk Up'),
+        M('39', 'Stone Edge'),
+        M('43', 'Leaf Storm'),
       ],
-      eggMoves: [],
-      tmMoves: [],
+      eggMoves: [
+        EGG('Grassy Glide'),
+        EGG('Vital Throw'),
+      ],
+      tmMoves: [
+        TM('01', 'Work Up'),
+        TM('02', 'Rest'),
+        TM('03', 'Protect'),
+      ],
+      // anomaly: {discoverer: 'username'},
+      anomaly: null,
+      evYield: { DEF: 1 }, baseFriendship: 50, baseExp: 64, growthRate: 'Parabolic',
+      eggGroups: ['Field', 'Grass'], gender: { m: 87.5, f: 12.5 }, eggCycles: 5120,
+    },
+    {
+      dex: '002', name: 'Terradua', category: 'Stoneroller', types: ['GRASS', 'ROCK'],
+      height: '4\'08" ft', weight: '1471 lbs', catchRate: 45, found: [],
+      abilities: ['Overgrow'],
+      hidden:  'Stamina',
+      stats: { HP: 54, ATK: 58, DEF: 58, SPA: 40, SPD: 50, SPE: 50 },
+      flavor: 'To get nutrition, Tamatoo chews soil in its mouth like gum. After the soil has lost its nutrients, it spits out small pucks of dirt called “Mud Cakes”.',
+      evo: { from: '001', method: 'Lv 16'},
+      levelMoves: [
+        M('1',  'Tackle'),
+        M('5',  'Defense Curl'),
+        M('7',  'Leafage'),
+        M('11', 'Barrage'),
+        M('15', 'Grass Whistle'),
+        M('18', 'Razor Leaf'),
+        M('22', 'Worry Seed'),
+        M('25', 'Headbutt'),
+        M('29', 'Stealth Rock'),
+        M('32', 'Rock Blast'),
+        M('36', 'Bulk Up'),
+        M('39', 'Stone Edge'),
+        M('43', 'Leaf Storm'),
+      ],
+      eggMoves: [
+        EGG('Grassy Glide'),
+        EGG('Vital Throw'),
+      ],
+      tmMoves: [
+        TM('01', 'Work Up'),
+        TM('02', 'Rest'),
+        TM('03', 'Protect'),
+      ],
       // anomaly: {discoverer: 'username'},
       anomaly: null,
       evYield: { DEF: 1 }, baseFriendship: 50, baseExp: 64, growthRate: 'Parabolic',

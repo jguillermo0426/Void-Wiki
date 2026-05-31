@@ -8,7 +8,9 @@ window.VIEWS = window.VIEWS || {};
   const H3 = (props) => <h3 style={{ margin: props.m || '0 0 14px', fontFamily: "'Silkscreen', monospace", fontSize: 11, letterSpacing: 1, color: '#8a5cff' }}>{props.children}</h3>;
 
   function MoveRow({ m }) {
-    const c = TYPES[m.type];
+    const move = window.VGAME.byMove(m.name) || {};
+    const type = move.type || 'NORMAL';
+    const c = TYPES[type];
     const isSig = m.lv === '—';
     const isEgg = m.lv === 'EGG';
     const isTM  = typeof m.lv === 'string' && m.lv.startsWith('TM');
@@ -19,7 +21,7 @@ window.VIEWS = window.VIEWS || {};
     const Stat = ({ label, val }) => (
       <div style={{ textAlign: 'right', minWidth: 36 }}>
         <div style={{ fontFamily: "'Silkscreen', monospace", fontSize: 7, color: '#5f5980' }}>{label}</div>
-        <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 13, color: '#d8d2f0', fontWeight: 700 }}>{val}</div>
+        <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 13, color: '#d8d2f0', fontWeight: 700 }}>{val ?? '—'}</div>
       </div>
     );
     return (
@@ -31,10 +33,10 @@ window.VIEWS = window.VIEWS || {};
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontFamily: "'Pixelify Sans', sans-serif", fontSize: 18, fontWeight: 700, color: '#fff', lineHeight: 1.1, marginBottom: 6 }}>{m.name}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <TypePill t={m.type} sm onClick={(e) => e.stopPropagation()} /><span style={{ fontSize: 12, color: '#8a83a8' }}>{m.cls}</span>
+            <TypePill t={type} sm onClick={(e) => e.stopPropagation()} /><span style={{ fontSize: 12, color: '#8a83a8' }}>{move.cls || '—'}</span>
           </div>
         </div>
-        <div style={{ flex: '0 0 auto', display: 'flex', gap: 12 }}><Stat label="POW" val={m.pow} /><Stat label="ACC" val={m.acc} /><Stat label="PP" val={m.pp} /></div>
+        <div style={{ flex: '0 0 auto', display: 'flex', gap: 12 }}><Stat label="POW" val={move.pow} /><Stat label="ACC" val={move.acc} /><Stat label="PP" val={move.pp} /></div>
       </div>
     );
   }
@@ -259,19 +261,25 @@ window.VIEWS = window.VIEWS || {};
               <div style={{ display: 'flex', justifyContent: 'center' }}><Radar stats={d.stats} /></div>
               <div style={{ textAlign: 'center', fontFamily: "'Space Mono', monospace", fontSize: 13, color: '#8a83a8', marginTop: 2, marginBottom: 24 }}>TOTAL <span style={{ color: accent, fontWeight: 700, fontSize: 16 }}>{total}</span></div>
               <H3>TYPE MATCHUPS</H3>
-              <Matchups weak={d.weak} resist={d.resist} immune={d.immune} />
+              <Matchups {...window.VGAME.computeMatchups(d.types)} />
             </div>
 
             <div>
               <H3 m="0 0 16px">BASE STATS</H3>
               <StatBars stats={d.stats} />
               <H3 m="26px 0 12px">ABILITIES</H3>
-              {[...d.abilities, { ...d.hidden, hidden: true }].map(a => (
-                <button key={a.name} onClick={() => go('#/abilities')} style={{ display: 'block', width: '100%', textAlign: 'left', cursor: 'pointer', marginBottom: 12, padding: '12px 14px', borderRadius: 10, background: '#100c24', border: '1px solid #221c3e' }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: a.hidden ? '#cdbfff' : '#f0ecff', fontFamily: "'Space Grotesk', sans-serif" }}>{a.name}{a.hidden && <span style={{ marginLeft: 8, fontFamily: "'Silkscreen', monospace", fontSize: 8, color: '#8a5cff' }}>HIDDEN</span>}</div>
-                  <div style={{ fontSize: 13, color: '#9a93b5', marginTop: 4, lineHeight: 1.5, fontFamily: "'Space Grotesk', sans-serif" }}>{a.desc}</div>
-                </button>
-              ))}
+              {(() => {
+                const findAbility = (name) => window.VGAME.ABILITIES.find(a => a.name === name) || { name, desc: '—' };
+                return [
+                  ...d.abilities.map(name => findAbility(name)),
+                  { ...findAbility(d.hidden), hidden: true },
+                ].map(a => (
+                  <button key={a.name} onClick={() => go('#/abilities')} style={{ display: 'block', width: '100%', textAlign: 'left', cursor: 'pointer', marginBottom: 12, padding: '12px 14px', borderRadius: 10, background: '#100c24', border: '1px solid #221c3e' }}>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: a.hidden ? '#cdbfff' : '#f0ecff', fontFamily: "'Space Grotesk', sans-serif" }}>{a.name}{a.hidden && <span style={{ marginLeft: 8, fontFamily: "'Silkscreen', monospace", fontSize: 8, color: '#8a5cff' }}>HIDDEN</span>}</div>
+                    <div style={{ fontSize: 13, color: '#9a93b5', marginTop: 4, lineHeight: 1.5, fontFamily: "'Space Grotesk', sans-serif" }}>{a.desc}</div>
+                  </button>
+                ));
+              })()}
             </div>
           </div>
 
