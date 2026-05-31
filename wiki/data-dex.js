@@ -304,6 +304,78 @@ window.VDEX = (function () {
       evYield: { DEF: 1, ATK: 1 }, baseFriendship: 50, baseExp: 142, growthRate: 'Parabolic',
       eggGroups: ['Field', 'Grass'], gender: { m: 87.5, f: 12.5 }, eggCycles: 5120,
     },
+    {
+      dex: '075', name: 'Sediranger', category: 'Potential', types: ['ROCK'],
+      height: '4\'08" ft', weight: '1471 lbs', catchRate: 45, found: [],
+      abilities: ['Sturdy'],
+      hidden: 'Adaptability',
+      stats: { HP: 50, ATK: 50, DEF: 50, SPA: 50, SPD: 50, SPE: 40 },
+      flavor: 'Sedimite has a cute and friendly nature, sometimes placing random rocks and items into its core purely for fun.',
+      evo: { from: '067', method: 'Dawn Stone'},
+      levelMoves: [
+      ],
+      eggMoves: [],
+      tmMoves: [
+      ],
+      // anomaly: {discoverer: 'username'},
+      anomaly: null,
+      evYield: { DEF: 1, ATK: 1 }, baseFriendship: 50, baseExp: 142, growthRate: 'Parabolic',
+      eggGroups: ['Field', 'Grass'], gender: { m: 87.5, f: 12.5 }, eggCycles: 5120,
+    },
+    {
+      dex: '076', name: 'Sedimancer', category: 'Potential', types: ['ROCK'],
+      height: '4\'08" ft', weight: '1471 lbs', catchRate: 45, found: [],
+      abilities: ['Sturdy'],
+      hidden: 'Adaptability',
+      stats: { HP: 50, ATK: 50, DEF: 50, SPA: 50, SPD: 50, SPE: 40 },
+      flavor: 'Sedimite has a cute and friendly nature, sometimes placing random rocks and items into its core purely for fun.',
+      evo: { from: '067', method: 'Dusk Stone'},
+      levelMoves: [
+      ],
+      eggMoves: [],
+      tmMoves: [
+      ],
+      // anomaly: {discoverer: 'username'},
+      anomaly: null,
+      evYield: { DEF: 1, ATK: 1 }, baseFriendship: 50, baseExp: 142, growthRate: 'Parabolic',
+      eggGroups: ['Field', 'Grass'], gender: { m: 87.5, f: 12.5 }, eggCycles: 5120,
+    },
+    {
+      dex: '077', name: 'Sediric', category: 'Potential', types: ['ROCK'],
+      height: '4\'08" ft', weight: '1471 lbs', catchRate: 45, found: [],
+      abilities: ['Sturdy'],
+      hidden: 'Adaptability',
+      stats: { HP: 50, ATK: 50, DEF: 50, SPA: 50, SPD: 50, SPE: 40 },
+      flavor: 'Sedimite has a cute and friendly nature, sometimes placing random rocks and items into its core purely for fun.',
+      evo: { from: '067', method: 'Shiny Stone'},
+      levelMoves: [
+      ],
+      eggMoves: [],
+      tmMoves: [
+      ],
+      // anomaly: {discoverer: 'username'},
+      anomaly: null,
+      evYield: { DEF: 1, ATK: 1 }, baseFriendship: 50, baseExp: 142, growthRate: 'Parabolic',
+      eggGroups: ['Field', 'Grass'], gender: { m: 87.5, f: 12.5 }, eggCycles: 5120,
+    },
+    {
+      dex: '078', name: 'Sedilock', category: 'Potential', types: ['ROCK'],
+      height: '4\'08" ft', weight: '1471 lbs', catchRate: 45, found: [],
+      abilities: ['Sturdy'],
+      hidden: 'Adaptability',
+      stats: { HP: 50, ATK: 50, DEF: 50, SPA: 50, SPD: 50, SPE: 40 },
+      flavor: 'Sedimite has a cute and friendly nature, sometimes placing random rocks and items into its core purely for fun.',
+      evo: { from: '067', method: 'Cosmic Stone'},
+      levelMoves: [
+      ],
+      eggMoves: [],
+      tmMoves: [
+      ],
+      // anomaly: {discoverer: 'username'},
+      anomaly: null,
+      evYield: { DEF: 1, ATK: 1 }, baseFriendship: 50, baseExp: 142, growthRate: 'Parabolic',
+      eggGroups: ['Field', 'Grass'], gender: { m: 87.5, f: 12.5 }, eggCycles: 5120,
+    },
   ];
 
   const byDex = (n) => DEX.find((d) => d.dex === String(n));
